@@ -37,8 +37,23 @@ let redraw = (datas) => {
     .range([0,height])
     
   const xScale = d3.scaleLinear()
-    .domain([0,d3.max(datas)])
+    .domain([0,datas.length])
     .range([0,width])
+    
+  const yAxisScale = d3.scaleLinear()
+    .domain([d3.max(datas),0])
+    .range([0, height])
+    
+  const yAxis = d3.axisLeft(yAxisScale).ticks(d3.max(datas))  
+  const xAxis = d3.axisBottom(xScale).ticks(datas.length)
+  
+  svg.append("g")
+  .attr("transform", "translate(20)")
+  .call(yAxis); 
+  
+  svg.append("g")
+  .attr("transform", `translate(0,280)`)
+  .call(xAxis); 
     
   svg.selectAll('rect')
     .data(datas)
@@ -46,7 +61,7 @@ let redraw = (datas) => {
     .append('rect')
     .attr('class','bar')
     .attr('x', (d,i) => {
-      return i * 22
+      return i * 22 + marginLeft
     })
     .attr('y', (d) => {
       return height - yScale(d)
@@ -55,6 +70,7 @@ let redraw = (datas) => {
     .attr('height', (d) => {
       return yScale(d)
     })
+    
 }
 
 reload()
